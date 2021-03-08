@@ -12,6 +12,9 @@
 #include "commander.h"
 
 // Globals
+int SCREEN_WIDTH=480;
+int SCREEN_HEIGHT=320;
+
 SDL_Surface *ScreenSurface;
 
 SDL_Window *Globals::g_sdlwindow=NULL;
@@ -45,7 +48,8 @@ int main(int argc, char** argv)
         char l_s[]="SDL_NOMOUSE=1";
         putenv(l_s);
     }
-
+    SDL_DisplayMode current;
+    
     // Init SDL
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK);
     if (IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF | IMG_INIT_WEBP) == 0) {
@@ -54,6 +58,32 @@ int main(int argc, char** argv)
         // Clear the errors for image libraries that did not initialize.
         SDL_ClearError();
     }
+   int i;
+   
+      // Get current display mode of all displays.
+  for(i = 0; i < SDL_GetNumVideoDisplays(); ++i){
+
+    int should_be_zero = SDL_GetCurrentDisplayMode(i, &current);
+
+    if(should_be_zero != 0)
+      // In case of error...
+      SDL_Log("Could not get display mode for video display #%d: %s", i, SDL_GetError());
+
+    else
+      // On success, print the current display mode.
+      SDL_Log("Display #%d: current display mode is %dx%dpx @ %dhz.", i, current.w, current.h, current.refresh_rate);
+
+  }
+
+
+// Try to detect screen size and resize accordingly. 
+SCREEN_WIDTH=current.w;
+SCREEN_HEIGHT=current.h;
+
+screen.w = SCREEN_WIDTH;
+screen.h = SCREEN_HEIGHT;
+screen.actual_w = SCREEN_WIDTH * PPU_X;
+screen.actual_h = SCREEN_HEIGHT * PPU_Y;
 
     // Check for joystick
     if (SDL_NumJoysticks() > 0) {
@@ -107,7 +137,7 @@ int main(int argc, char** argv)
                               SDL_WINDOWPOS_UNDEFINED,  
                               SDL_WINDOWPOS_UNDEFINED,  
                               screen.actual_w,screen.actual_h,  
-                              SDL_WINDOW_OPENGL);  
+                              SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN);  
     ScreenSurface = SDL_GetWindowSurface(Globals::g_sdlwindow);
     // ScreenSurface = SetVideoMode(screen.actual_w, screen.actual_h, SCREEN_BPP, SURFACE_FLAGS);
 

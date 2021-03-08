@@ -51,7 +51,7 @@ std::string input_start_btn;
     std::ifstream cFile ("/tmp/joypads/"+gamepad+".cfg");
     if (cFile.is_open())
     {
-     std::cout << "Using: " << "/tmp/joypads/" << gamepad << ".cfg" << '\n';
+     // std::cout << "Using: " << "/tmp/joypads/" << gamepad << ".cfg" << '\n';
         std::string line;
         while(getline(cFile, line)){
             line.erase(std::remove_if(line.begin(), line.end(), isspace),

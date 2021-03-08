@@ -15,16 +15,6 @@
 #define RES_DIR "res/"
 #endif
 
-#ifndef SCREEN_WIDTH
-// #define SCREEN_WIDTH 320
-#define SCREEN_WIDTH 480
-#endif
-
-#ifndef SCREEN_HEIGHT
-// #define SCREEN_HEIGHT 240
-#define SCREEN_HEIGHT 320
-#endif
-
 #ifndef SCREEN_BPP
 #define SCREEN_BPP 16
 #endif
@@ -127,3 +117,6 @@
 #endif
 
 #endif // _DEF_H_
+
+extern int SCREEN_WIDTH;
+extern int SCREEN_HEIGHT;
