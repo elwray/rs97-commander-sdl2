@@ -67,8 +67,13 @@ const bool CFileLister::list(const std::string &p_path)
     // Sort lists
     sort(m_listFiles.begin(), m_listFiles.end(), compareNoCase);
     sort(m_listDirs.begin(), m_listDirs.end(), compareNoCase);
-    // Add "..", always at the first place
-    m_listDirs.insert(m_listDirs.begin(), T_FILE("..", 0));
+
+    // Add "..", always at the first place except root directory
+    if (!File_utils::pathIsRoot(p_path))
+    {
+        m_listDirs.insert(m_listDirs.begin(), T_FILE("..", 0));
+    }
+
     return true;
 }
 
