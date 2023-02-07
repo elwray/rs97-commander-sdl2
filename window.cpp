@@ -28,84 +28,93 @@ CWindow::~CWindow(void)
     Globals::g_windows.pop_back();
 }
 
+inline const bool CWindow::isJoystickConnected() const
+{
+    return SDL_NumJoysticks() > 0;
+};
+
 const int CWindow::execute(void)
 {
-std::string input_up_btn;
-std::string input_down_btn;
-std::string input_left_btn;
-std::string input_right_btn;
-std::string input_a_btn;
-std::string input_b_btn;
-std::string input_x_btn;
-std::string input_y_btn;
-std::string input_l_btn;
-std::string input_r_btn;
-std::string input_select_btn;
-std::string input_start_btn;
+    std::string input_up_btn;
+    std::string input_down_btn;
+    std::string input_left_btn;
+    std::string input_right_btn;
+    std::string input_a_btn;
+    std::string input_b_btn;
+    std::string input_x_btn;
+    std::string input_y_btn;
+    std::string input_l_btn;
+    std::string input_r_btn;
+    std::string input_select_btn;
+    std::string input_start_btn;
 
-
- std::string gamepad = SDL_JoystickNameForIndex(0);
-    
-    //from: https://www.walletfox.com/course/parseconfigfile.php
-    // std::ifstream is RAII, i.e. no need to call close
-    std::ifstream cFile ("/tmp/joypads/"+gamepad+".cfg");
-    if (cFile.is_open())
+    if (isJoystickConnected())
     {
-     // std::cout << "Using: " << "/tmp/joypads/" << gamepad << ".cfg" << '\n';
-        std::string line;
-        while(getline(cFile, line)){
-            line.erase(std::remove_if(line.begin(), line.end(), isspace),
-                                 line.end());
-            if(line[0] == '#' || line.empty())
-                continue;
-            auto delimiterPos = line.find("=");
-            auto name = line.substr(0, delimiterPos);
-            auto value = line.substr(delimiterPos + 1);
-            value.erase(std::remove(value.begin(),value.end(),'\"'),value.end());
-          //  std::cout << name << " " << value << '\n';
-          
-           if  (name.find("input_up_btn") != std::string::npos)
-           input_up_btn = value;
-                     
-           if  (name.find("input_down_btn") != std::string::npos)
-           input_down_btn = value;
-                     
-           if  (name.find("input_left_btn") != std::string::npos)
-           input_left_btn = value;
-                     
-           if  (name.find("input_right_btn") != std::string::npos)
-           input_right_btn = value;
-          
-           if  (name.find("input_a_btn") != std::string::npos)
-           input_a_btn = value;
-          
-           if  (name.find("input_b_btn") != std::string::npos)
-           input_b_btn = value;
-          
-           if  (name.find("input_x_btn") != std::string::npos) 
-           input_x_btn = value;
-          
-           if  (name.find("input_y_btn") != std::string::npos) 
-           input_y_btn = value;
-          
-           if  (name.find("input_l_btn") != std::string::npos) 
-           input_l_btn = value;
-          
-           if  (name.find("input_r_btn") != std::string::npos) 
-           input_r_btn = value;
-          
-           if  (name.find("input_select_btn") != std::string::npos) 
-           input_select_btn = value;
-          
-           if  (name.find("input_start_btn") != std::string::npos) 
-           input_start_btn = value;
+        const std::string joystickName = SDL_JoystickNameForIndex(0);
+        const std::string configPath = "/tmp/joypads/" + joystickName + ".cfg";
+
+        //from: https://www.walletfox.com/course/parseconfigfile.php
+        // std::ifstream is RAII, i.e. no need to call close
+        std::ifstream cFile(configPath);
+        if (cFile.is_open())
+        {
+            // std::cout << "Using: " << "/tmp/joypads/" << gamepad << ".cfg" << '\n';
+            std::string line;
+            while(getline(cFile, line))
+            {
+                line.erase(std::remove_if(line.begin(), line.end(), isspace), line.end());
+                if(line[0] == '#' || line.empty())
+                    continue;
+
+                auto delimiterPos = line.find("=");
+                auto name = line.substr(0, delimiterPos);
+                auto value = line.substr(delimiterPos + 1);
+                value.erase(std::remove(value.begin(),value.end(),'\"'),value.end());
+                //  std::cout << name << " " << value << '\n';
+            
+                if (name.find("input_up_btn") != std::string::npos)
+                    input_up_btn = value;
+
+                if (name.find("input_down_btn") != std::string::npos)
+                    input_down_btn = value;
+
+                if (name.find("input_left_btn") != std::string::npos)
+                    input_left_btn = value;
+
+                if (name.find("input_right_btn") != std::string::npos)
+                    input_right_btn = value;
+
+                if (name.find("input_a_btn") != std::string::npos)
+                    input_a_btn = value;
+
+                if (name.find("input_b_btn") != std::string::npos)
+                    input_b_btn = value;
+
+                if (name.find("input_x_btn") != std::string::npos)
+                    input_x_btn = value;
+
+                if (name.find("input_y_btn") != std::string::npos)
+                    input_y_btn = value;
+
+                if (name.find("input_l_btn") != std::string::npos)
+                    input_l_btn = value;
+
+                if (name.find("input_r_btn") != std::string::npos)
+                    input_r_btn = value;
+
+                if (name.find("input_select_btn") != std::string::npos)
+                    input_select_btn = value;
+
+                if (name.find("input_start_btn") != std::string::npos)
+                    input_start_btn = value;
+            }
         }
-        
+        else
+        {
+            std::cerr << "Couldn't open " + configPath + " config file for reading." << std::endl;
+        }
     }
-    else {
-        printf("Name: %s\n", "Couldn't open /tmp/joypads/"+gamepad+".cfg config file for reading.");
-    }
-    
+
     m_retVal = 0;
     Uint32 l_time(0);
     SDL_Event l_event;

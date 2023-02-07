@@ -49,6 +49,7 @@ class CWindow
     CWindow(const CWindow &p_source);
     const CWindow &operator =(const CWindow &p_source);
 
+    const bool isJoystickConnected() const;
 };
 
 #endif
