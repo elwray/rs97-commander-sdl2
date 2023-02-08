@@ -40,13 +40,18 @@ namespace File_utils
 
     void stringReplace(std::string &p_string, const std::string &p_search, const std::string &p_replace);
 
-    const bool pathIsRoot(const std::string& path);
-
     // Dialogs
 
     void diskInfo(void);
 
     void diskUsed(const std::vector<std::string> &p_files);
+
+    // Inline functions.
+
+    inline const bool pathIsRoot(const std::string& path)
+    {
+        return path == "/";
+    }
 }
 
 #endif

@@ -348,11 +348,6 @@ const unsigned long int File_utils::getFileSize(const std::string &p_file)
     return l_ret;
 }
 
-const bool File_utils::pathIsRoot(const std::string& path)
-{
-    return path == "/";
-}
-
 void File_utils::diskInfo(void)
 {
     std::string l_line("");
